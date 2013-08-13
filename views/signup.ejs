@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title><%= title %></title>
+<link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+<h1><%= title %></h1>
+<div class="container">
+    <form id="form_sign_up" action="signup" method="post">
+        <fieldset>
+            <p>
+            <label>用户名</label>
+            <input id="username" type="text" name="username">
+            </p>
+            <p>
+            <label>密码</label>
+            <input id="password" type="password" name="password">
+            </p>
+            <p>
+            <label>确认密码</label>
+            <input id="password2" type="password" name="password2">
+            </p>
+            <p>
+            <label>邮箱</label>
+            <input id="email" type="text" name="email">
+            </p>
+            <p>
+            <input id="btn_sign_up" type="submit" value="注册" class="btn">
+            </p>
+        </fieldset>
+    </form>
+</div>
+</body>
+</html>
