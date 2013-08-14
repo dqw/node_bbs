@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title><%= title %></title>
-<link rel='stylesheet' href='/stylesheets/style.css' />
-</head>
-<body>
+<% include layout_top %>
 <h1><%= title %></h1>
 <div class="container">
     <form id="form_sign_up" action="signup" method="post">
@@ -26,10 +20,38 @@
             <input id="email" type="text" name="email">
             </p>
             <p>
-            <input id="btn_sign_up" type="submit" value="注册" class="btn">
+            <input id="btn_signup" type="button" value="注册" class="btn">
             </p>
         </fieldset>
     </form>
 </div>
-</body>
-</html>
+<script type="text/javascript">
+$(document).ready(function() {
+    $("#btn_signup").click(function() {
+        var that = this;
+        var username = $("#username").val();
+        var password = $("#password").val();
+        if(username == "") {
+            alert("用户名不能为空");
+            return false;
+        }
+        if(password == "") {
+            alert("密码不能为空");
+            return false;
+        }
+        if($("#password2").val() !== password) {
+            alert("密码不一致");
+            return false;
+        }
+        $.getJSON("/username/"+username).done(function(result) { 
+            if(result === false) {
+                $(that).prop("disabled", true);
+                $("#form_sign_up").submit();
+            } else {
+                alert("用户名已存在");
+            }
+        });
+    });
+});
+</script>
+<% include layout_top %>
