@@ -35,6 +35,7 @@ app.get('/signup', user.signup);
 app.post('/signup', user.save);
 app.get('/login', user.login);
 app.get('/logout', user.logout);
+app.get('/account', user.account);
 app.get('/mongo', mongo.test);
 
 http.createServer(app).listen(app.get('port'), function(){

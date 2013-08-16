@@ -4,8 +4,8 @@
     <form id="form_sign_up" action="signup" method="post">
         <fieldset>
             <p>
-            <label>用户名</label>
-            <input id="username" type="text" name="username">
+            <label>邮箱</label>
+            <input id="email" type="text" name="email">
             </p>
             <p>
             <label>密码</label>
@@ -16,10 +16,6 @@
             <input id="password2" type="password" name="password2">
             </p>
             <p>
-            <label>邮箱</label>
-            <input id="email" type="text" name="email">
-            </p>
-            <p>
             <input id="btn_signup" type="button" value="注册" class="btn">
             </p>
         </fieldset>
@@ -28,11 +24,10 @@
 <script type="text/javascript">
 $(document).ready(function() {
     $("#btn_signup").click(function() {
-        var that = this;
-        var username = $("#username").val();
+        var email = $("#email").val();
         var password = $("#password").val();
-        if(username == "") {
-            alert("用户名不能为空");
+        if(email == "") {
+            alert("密码不能为空");
             return false;
         }
         if(password == "") {
@@ -43,14 +38,7 @@ $(document).ready(function() {
             alert("密码不一致");
             return false;
         }
-        $.getJSON("/username/"+username).done(function(result) { 
-            if(result === false) {
-                $(that).prop("disabled", true);
-                $("#form_sign_up").submit();
-            } else {
-                alert("用户名已存在");
-            }
-        });
+        $("#form_sign_up").submit();
     });
 });
 </script>
