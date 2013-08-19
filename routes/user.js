@@ -7,6 +7,10 @@ var crypto = require('crypto');
 
 //新用户保存
 exports.save = function(req, res){
+    if(req.body.password.length < 6) {
+        return res.send("密码最少为6位");
+    }
+
     if(req.body.password != req.body.password2) {
         return res.send("密码不一致");
     }
@@ -20,13 +24,13 @@ exports.save = function(req, res){
         nickname: ''
     });
 
-    checkUserExist(newUser, function(result) {
+    User.isExist(newUser.email, function(result) {
         if(result) {
             return res.send("用户已存在");
         }
         newUser.save(function(err) {
             if(err) {
-                res.redirect('/signup');
+                return res.redirect('/signup');
             }
             req.session.email = newUser.email;
             req.session.nickname = newUser.nickname;
@@ -35,12 +39,12 @@ exports.save = function(req, res){
     });
 };
 
-function checkUserExist(newUser, callback) {
-    User.get(newUser.email, function(err, user) {
-        if(err || user) {
-            callback(true)
+exports.check_email = function(req, res) {
+    User.isExist(req.query.email, function(result) {
+        if(result) {
+            res.send("false");
         } else {
-            callback(false)
+            res.send("true");
         }
     });
 }

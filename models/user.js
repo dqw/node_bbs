@@ -59,3 +59,15 @@ User.get = function(email, callback){
     });
   });
 };
+
+User.isExist = function(email, callback) {
+    User.get(email, function(err, user) {
+        if(err || user) {
+            callback(true)
+        } else {
+            callback(false)
+        }
+    });
+};
+
+

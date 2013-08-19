@@ -1,7 +1,7 @@
 <% include layout_top %>
 <h1><%= title %></h1>
 <div class="container">
-    <form id="form_sign_up" action="signup" method="post">
+    <form id="form_signup" action="signup" method="post">
         <fieldset>
             <p>
             <label>邮箱</label>
@@ -16,30 +16,54 @@
             <input id="password2" type="password" name="password2">
             </p>
             <p>
-            <input id="btn_signup" type="button" value="注册" class="btn">
+            <input id="btn_signup" type="submit" value="注册" class="btn">
             </p>
         </fieldset>
     </form>
 </div>
+<script type="text/javascript" src='/javascripts/jquery.validate.min.js'></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    $("#btn_signup").click(function() {
-        var email = $("#email").val();
-        var password = $("#password").val();
-        if(email == "") {
-            alert("密码不能为空");
-            return false;
+$('#form_signup').validate({
+        rules : {
+            email: {
+                required: true,
+                email: true,
+                remote: {
+                    url: 'check_email',
+                    type: 'get',
+                    data: {
+                        email: function(){
+                            return $('#email').val();
+                        }
+                    }
+                }
+            },
+            password: {
+                required: true,
+                minlength: 6
+            },
+            password2: {
+                required: true,
+                equalTo: "#password"
+            }
+        },
+        messages : {
+            email: {
+                required : '邮箱不能为空',
+                email: '请填写正确的邮箱地址',
+                remote: '该邮箱已存在'
+            },
+            password: {
+                required: '密码不能为空',
+                minlength: '密码最少为6位'
+            },
+            password2: {
+                required: '确认密码不能为空',
+                equalTo: '密码不一致'
+            }
         }
-        if(password == "") {
-            alert("密码不能为空");
-            return false;
-        }
-        if($("#password2").val() !== password) {
-            alert("密码不一致");
-            return false;
-        }
-        $("#form_sign_up").submit();
     });
 });
 </script>
-<% include layout_top %>
+<% include layout_bottom %>
