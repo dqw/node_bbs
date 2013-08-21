@@ -32,14 +32,14 @@ exports.save = function(req, res){
             if(err) {
                 return res.redirect('/signup');
             }
-            req.session.email = newUser.email;
+            req.session.user = newUser.email;
             req.session.nickname = newUser.nickname;
             res.send("注册成功");
         });
     });
 };
 
-exports.check_email = function(req, res) {
+exports.checkEmail = function(req, res) {
     User.isExist(req.query.email, function(result) {
         if(result) {
             res.send("false");
@@ -51,12 +51,35 @@ exports.check_email = function(req, res) {
 
 //登录
 exports.login = function(req, res){
-  res.send("登录");
+  res.render('login', { title: '注册' });
+};
+
+exports.checkPassword = function(req, res){
+
+    var md5sum = crypto.createHash('md5');
+    var password = md5sum.update(req.body.password).digest('hex');
+
+    var user = {
+        email: req.body.email,
+        password: password
+    };
+
+    User.checkPassword(user, function(err, user) {
+        if(user) {
+            req.session.user = user.email;
+            req.session.nickname = user.nickname;
+            return res.redirect("/");
+        } else {
+            res.send("登陆失败");
+        }
+    });
 };
 
 //退出
 exports.logout = function(req, res){
-  res.send("退出");
+    req.session.user = null;
+    req.session.nickname = null;
+    return res.redirect("/");
 };
 
 //账号设置

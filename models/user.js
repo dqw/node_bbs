@@ -35,7 +35,7 @@ User.prototype.save = function save(callback) {
     });
 };
 
-User.get = function(email, callback){
+User.get = function(condition, callback){
   mongodb.open(function(err, db){
     if(err){
       return callback(err);
@@ -47,7 +47,7 @@ User.get = function(email, callback){
         return callback(err);
       }
 
-      collection.findOne({email: email}, function(err, doc){
+      collection.findOne(condition, function(err, doc){
         mongodb.close();
         if(doc) {
           var user = new User(doc);
@@ -61,13 +61,39 @@ User.get = function(email, callback){
 };
 
 User.isExist = function(email, callback) {
-    User.get(email, function(err, user) {
+    var condition = {email: email};
+    User.get(condition, function(err, user) {
         if(err || user) {
             callback(true)
         } else {
             callback(false)
         }
     });
+};
+
+User.checkPassword = function(user, callback){
+  mongodb.open(function(err, db){
+    if(err){
+      return callback(err);
+    }
+
+    db.collection('user', function(err, collection){
+      if(err){
+        mongodb.close();
+        return callback(err);
+      }
+
+      collection.findOne(user, function(err, doc){
+        mongodb.close();
+        if(doc) {
+          var user = new User(doc);
+          callback(err, user);
+        } else {
+          callback(err, null);
+        }
+      });
+    });
+  });
 };
 
 

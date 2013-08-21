@@ -3,10 +3,9 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-a {
-  color: #00B7FF;
-}
-
 label.error {
   color: red;
 }
+
+.content { float: left; width:758px; }
+.sidebar { float: right; width:290px; }

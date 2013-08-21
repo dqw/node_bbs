@@ -6,9 +6,9 @@
 var express = require('express')
   , routes = require('./routes')
   , user = require('./routes/user')
-  , mongo = require('./routes/mongo')
   , http = require('http')
-  , path = require('path');
+  , path = require('path')
+  , config = require('./config.js');
 
 var app = express();
 
@@ -22,6 +22,11 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser('your secret here'));
 app.use(express.session());
+app.use(function(req, res, next){
+  res.locals.title = config.title;
+  res.locals.user = req.session.user;
+  next();
+});
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -33,11 +38,11 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/signup', user.signup);
 app.post('/signup', user.save);
-app.get('/check_email', user.check_email);
+app.get('/check_email', user.checkEmail);
 app.get('/login', user.login);
+app.post('/login', user.checkPassword);
 app.get('/logout', user.logout);
 app.get('/account', user.account);
-app.get('/mongo', mongo.test);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
