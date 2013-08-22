@@ -8,7 +8,7 @@ function User(user) {
 
 module.exports = User;
 
-User.prototype.save = function save(callback) {
+User.prototype.save = function(callback) {
 
     var user = {
         email: this.email,
@@ -94,6 +94,31 @@ User.checkPassword = function(user, callback){
       });
     });
   });
+};
+
+User.update = function(email, newValue, callback) {
+
+    mongodb.open(function(err, db){
+        if(err){
+            return callback(err);
+        }
+
+        db.collection('user', function(err, collection){
+            if(err){
+                mongodb.close();
+                return callback(err);
+            }
+
+            collection.update({email: email} ,{"$set": newValue}, function(err){
+                mongodb.close();
+                if(err) {
+                    callback(false);
+                } else {
+                    callback(true);
+                }
+            });
+        });
+    });
 };
 
 

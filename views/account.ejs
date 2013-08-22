@@ -1,0 +1,72 @@
+<% include layout_top %>
+<h1>修改昵称</h1>
+<div class="container">
+    <form id="form_account" action="modify_account" method="post">
+        <fieldset>
+            <p>
+            <label>新昵称</label>
+            <input id="nickname" type="text" name="nickname" value="<%= nickname %>">
+            </p>
+            <input id="btn_modify_account" type="submit" value="提交" class="btn">
+            </p>
+        </fieldset>
+    </form>
+</div>
+<h1>修改密码</h1>
+<div class="container">
+    <form id="form_password" action="change_password" method="post">
+        <fieldset>
+            <p>
+            <label>原密码</label>
+            <input id="old_password" type="password" name="old_password">
+            </p>
+            <p>
+            <label>新密码</label>
+            <input id="password" type="password" name="password">
+            </p>
+            <p>
+            <label>确认新密码</label>
+            <input id="password2" type="password" name="password2">
+            </p>
+            <p>
+            <input id="btn_modify_password" type="submit" value="提交" class="btn">
+            </p>
+        </fieldset>
+    </form>
+</div>
+<script type="text/javascript" src='/javascripts/jquery.validate.min.js'></script>
+<script type="text/javascript">
+$(document).ready(function() {
+$('#form_password').validate({
+        rules : {
+            old_password: {
+                required: true,
+                minlength: 6
+            },
+            password: {
+                required: true,
+                minlength: 6
+            },
+            password2: {
+                required: true,
+                equalTo: "#password"
+            }
+        },
+        messages : {
+            email: {
+                required: '密码不能为空',
+                minlength: '密码最少为6位'
+            },
+            password: {
+                required: '密码不能为空',
+                minlength: '密码最少为6位'
+            },
+            password2: {
+                required: '确认密码不能为空',
+                equalTo: '密码不一致'
+            }
+        }
+    });
+});
+</script>
+<% include layout_bottom %>

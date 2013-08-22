@@ -84,5 +84,61 @@ exports.logout = function(req, res){
 
 //账号设置
 exports.account = function(req, res){
-  res.send("账号设置");
+  res.render('account');
 };
+
+//修改用户昵称
+exports.modifyAccount = function(req, res){
+
+    var newValue = {nickname: req.body.nickname};
+
+    User.update(req.session.user, newValue, function(result) {
+        if(result) {
+            req.session.nickname = req.body.nickname;
+            req.session.message = '修改成功';
+        } else {
+            req.session.message = '修改失败';
+        }
+        return res.redirect("/account");
+    });
+};
+
+//修改用户昵称
+exports.changePassword = function(req, res){
+    if(req.body.password !== req.body.password2) {
+        req.session.message = '密码不一致';
+        return res.redirect("/account");
+    }
+
+    var md5sum = crypto.createHash('md5');
+    var old_password = md5sum.update(req.body.old_password).digest('hex');
+
+    var user = {
+        email: req.session.user,
+        password: old_password
+    };
+
+    User.checkPassword(user, function(err, user) {
+        if(user) {
+            var md5sum = crypto.createHash('md5');
+            var password = md5sum.update(req.body.password).digest('hex');
+            var newValue = {password: password};
+
+            User.update(req.session.user, newValue, function(result) {
+                if(result) {
+                    req.session.message = '密码修改成功';
+                } else {
+                    req.session.message = '密码修改失败';
+                }
+                return res.redirect("/account");
+            });
+
+        } else {
+            req.session.message = '密码错误';
+        }
+        return res.redirect("/account");
+    });
+};
+
+
+

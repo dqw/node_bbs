@@ -25,6 +25,9 @@ app.use(express.session());
 app.use(function(req, res, next){
   res.locals.title = config.title;
   res.locals.user = req.session.user;
+  res.locals.nickname = req.session.nickname;
+  res.locals.message = req.session.message;
+  req.session.message = null;
   next();
 });
 app.use(app.router);
@@ -43,6 +46,8 @@ app.get('/login', user.login);
 app.post('/login', user.checkPassword);
 app.get('/logout', user.logout);
 app.get('/account', user.account);
+app.post('/modify_account', user.modifyAccount);
+app.post('/change_password', user.changePassword);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
