@@ -1,22 +1,24 @@
 var User = require('../models/user.js');
+var crypto = require('crypto');
+
 //新用户注册
 exports.signup = function(req, res){
-  res.render('signup', { title: '注册' });
+  res.render('signup');
 };
-var crypto = require('crypto');
 
 //新用户保存
 exports.save = function(req, res){
     if(req.body.password.length < 6) {
-        return res.send("密码最少为6位");
+        req.session.message = '密码最少6位';
+        return res.redirect('/signup');
     }
 
     if(req.body.password != req.body.password2) {
-        return res.send("密码不一致");
+        req.session.message = '密码不一致';
+        return res.redirect('/signup');
     }
 
-    var md5sum = crypto.createHash('md5');
-    var password = md5sum.update(req.body.password).digest('hex');
+    var password = getHashPassword(req.body.password);
 
     var newUser = new User({
         email: req.body.email,
@@ -26,7 +28,8 @@ exports.save = function(req, res){
 
     User.isExist(newUser.email, function(result) {
         if(result) {
-            return res.send("用户已存在");
+            req.session.message = '用户已存在';
+            return res.redirect('/signup');
         }
         newUser.save(function(err) {
             if(err) {
@@ -34,7 +37,7 @@ exports.save = function(req, res){
             }
             req.session.user = newUser.email;
             req.session.nickname = newUser.nickname;
-            res.send("注册成功");
+            return res.redirect('/index');
         });
     });
 };
@@ -51,13 +54,12 @@ exports.checkEmail = function(req, res) {
 
 //登录
 exports.login = function(req, res){
-  res.render('login', { title: '注册' });
+  res.render('login');
 };
 
 exports.checkPassword = function(req, res){
 
-    var md5sum = crypto.createHash('md5');
-    var password = md5sum.update(req.body.password).digest('hex');
+    var password = getHashPassword(req.body.password);
 
     var user = {
         email: req.body.email,
@@ -70,7 +72,8 @@ exports.checkPassword = function(req, res){
             req.session.nickname = user.nickname;
             return res.redirect("/");
         } else {
-            res.send("登陆失败");
+            req.session.message = '登录失败';
+            return res.redirect('/login');
         }
     });
 };
@@ -110,8 +113,7 @@ exports.changePassword = function(req, res){
         return res.redirect("/account");
     }
 
-    var md5sum = crypto.createHash('md5');
-    var old_password = md5sum.update(req.body.old_password).digest('hex');
+    var old_password = getHashPassword(req.body.old_password);
 
     var user = {
         email: req.session.user,
@@ -120,8 +122,8 @@ exports.changePassword = function(req, res){
 
     User.checkPassword(user, function(err, user) {
         if(user) {
-            var md5sum = crypto.createHash('md5');
-            var password = md5sum.update(req.body.password).digest('hex');
+
+            var password = getHashPassword(req.body.password);
             var newValue = {password: password};
 
             User.update(req.session.user, newValue, function(result) {
@@ -139,6 +141,19 @@ exports.changePassword = function(req, res){
         return res.redirect("/account");
     });
 };
+
+exports.checkLogin = function(req, res, next) {
+    if(!req.session.user) {
+        return res.redirect("/login");
+    }
+    next();
+};
+
+function getHashPassword(password) {
+    var md5sum = crypto.createHash('md5');
+    return md5sum.update(password).digest('hex');
+}
+
 
 
 

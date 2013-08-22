@@ -39,15 +39,26 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
+
 app.get('/signup', user.signup);
 app.post('/signup', user.save);
+
 app.get('/check_email', user.checkEmail);
+
 app.get('/login', user.login);
 app.post('/login', user.checkPassword);
+
 app.get('/logout', user.logout);
+
+app.get('/account', user.checkLogin);
 app.get('/account', user.account);
+
+app.post('/modify_account', user.checkLogin);
 app.post('/modify_account', user.modifyAccount);
+
+app.post('/change_password', user.checkLogin);
 app.post('/change_password', user.changePassword);
+
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
