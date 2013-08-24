@@ -1,5 +1,8 @@
 var User = require('../models/user.js');
 var crypto = require('crypto');
+var config = require('../config.js');
+var nodemailer = require("nodemailer");
+
 
 //新用户注册
 exports.signup = function(req, res){
@@ -122,10 +125,8 @@ exports.changePassword = function(req, res){
 
     User.checkPassword(user, function(err, user) {
         if(user) {
-
             var password = getHashPassword(req.body.password);
             var newValue = {password: password};
-
             User.update(req.session.user, newValue, function(result) {
                 if(result) {
                     req.session.message = '密码修改成功';
@@ -134,11 +135,10 @@ exports.changePassword = function(req, res){
                 }
                 return res.redirect("/account");
             });
-
         } else {
             req.session.message = '密码错误';
+            return res.redirect("/account");
         }
-        return res.redirect("/account");
     });
 };
 
@@ -148,6 +148,69 @@ exports.checkLogin = function(req, res, next) {
     }
     next();
 };
+
+//找回密码
+exports.forgot_password = function(req, res){
+  res.render('forgot_password');
+};
+
+//发送新密码
+exports.send_new_password = function(req, res){
+    User.isExist(req.body.email, function(result) {
+        if(result) {
+            var newPassword = Math.random().toString(36).substring(11);
+
+            var password = getHashPassword(newPassword);
+            var newValue = {password: password};
+            User.update(req.body.email, newValue, function(result) {
+                if(result) {
+                    var email = {
+                        email: req.body.email,
+                        title: '新密码',
+                        text: '新密码：' + newPassword
+                    };
+                    sendEmail(email);
+                    req.session.message = '新的密码已经发送到您的邮箱';
+                } else {
+                    req.session.message = '密码找回失败，请稍后重试';
+                }
+                return res.redirect('/forgot_password');
+            });
+        } else {
+            req.session.message = '用户不存在';
+            return res.redirect('/forgot_password');
+        }
+    });
+};
+
+function sendEmail(mail) {
+    var transport = nodemailer.createTransport("SMTP", {
+        host: config.system_email_smtp, // hostname
+        secureConnection: true, // use SSL
+        port: 465, // port for secure SMTP
+        auth: {
+            user: config.system_email,
+            pass: config.system_email_password 
+        }
+    });
+
+    var mailOptions = {
+        from: config.title + "<" + config.system_email +">", // sender address
+        to: mail.email, // list of receivers
+        subject: mail.title, // Subject line
+        text: mail.title + mail.text // plaintext body
+    }
+
+    transport.sendMail(mailOptions, function(error, response){
+        if(error){
+            console.log(error);
+        }else{
+            console.log("Message sent: " + response.message);
+        }
+
+        transport.close(); // shut down the connection pool, no more messages
+    });
+}
 
 function getHashPassword(password) {
     var md5sum = crypto.createHash('md5');

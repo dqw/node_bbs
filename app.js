@@ -59,6 +59,9 @@ app.post('/modify_account', user.modifyAccount);
 app.post('/change_password', user.checkLogin);
 app.post('/change_password', user.changePassword);
 
+app.get('/forgot_password', user.forgot_password);
+app.post('/forgot_password', user.send_new_password);
+
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
