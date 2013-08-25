@@ -7,7 +7,9 @@ label.error {
   color: red;
 }
 
-.content { float: left; width:758px; }
-.sidebar { float: right; width:290px; }
+.content { float: left; width:670px; min-height: 500px; border: 1px solid #CCC; }
+.sidebar { float: right; width:260px; min-height: 500px; border: 1px solid #CCC; }
+.footer { margin-top: 10px; border-top: 1px solid #CCC; }
 
-.message { color: red; border: 1px solid red; padding: 5px; }
+.topic-header { background-color: #CCC; padding: 8px; }
+

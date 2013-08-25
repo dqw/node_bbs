@@ -6,6 +6,7 @@
 var express = require('express')
   , routes = require('./routes')
   , user = require('./routes/user')
+  , topic = require('./routes/topic')
   , http = require('http')
   , path = require('path')
   , config = require('./config.js');
@@ -62,6 +63,8 @@ app.post('/change_password', user.changePassword);
 app.get('/forgot_password', user.forgot_password);
 app.post('/forgot_password', user.send_new_password);
 
+app.post('/new_topic', user.checkLogin);
+app.post('/new_topic', topic.new_topic);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

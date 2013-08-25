@@ -1,9 +1,7 @@
-
-/*
- * GET home page.
- */
+var Topic = require('../models/topic.js');
 
 exports.index = function(req, res){
-    console.log(req.session.user);
-  res.render('index');
+    Topic.list({}, function(err, topics) {
+        res.render('index', {topics: topics});
+    });
 };
