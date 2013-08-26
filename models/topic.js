@@ -54,6 +54,7 @@ Topic.list = function(condition, callback){
                 return callback(err, null);
             }
             collection.find(condition).toArray(function(err, docs){
+                mongodb.close();
                 if(err){
                     return callback(err, null);
                 }

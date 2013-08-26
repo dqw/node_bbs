@@ -23,24 +23,32 @@ exports.save = function(req, res){
 
     var password = getHashPassword(req.body.password);
 
-    var newUser = new User({
-        email: req.body.email,
-        password: password,
-        nickname: ''
-    });
-
-    User.isExist(newUser.email, function(result) {
-        if(result) {
-            req.session.message = '用户已存在';
-            return res.redirect('/signup');
+    User.get({}, function(err, result) {
+        var isAdmin = false;
+        if(!result) {
+            isAdmin = true;
         }
-        newUser.save(function(err) {
-            if(err) {
+
+        var newUser = new User({
+            email: req.body.email,
+            password: password,
+            nickname: '',
+            isAdmin: isAdmin
+        });
+
+        User.isExist(newUser.email, function(err, result) {
+            if(result) {
+                req.session.message = '用户已存在';
                 return res.redirect('/signup');
             }
-            req.session.user = newUser.email;
-            req.session.nickname = newUser.nickname;
-            return res.redirect('/index');
+            newUser.save(function(err) {
+                if(err) {
+                    return res.redirect('/signup');
+                }
+                req.session.user = newUser.email;
+                req.session.nickname = newUser.nickname;
+                return res.redirect('/');
+            });
         });
     });
 };
@@ -73,6 +81,7 @@ exports.checkPassword = function(req, res){
         if(user) {
             req.session.user = user.email;
             req.session.nickname = user.nickname;
+            req.session.isAdmin = user.isAdmin;
             return res.redirect("/");
         } else {
             req.session.message = '登录失败';

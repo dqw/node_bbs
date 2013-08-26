@@ -4,6 +4,7 @@ function User(user) {
     this.email = user.email;
     this.password = user.password;
     this.nickname = user.nickname;
+    this.isAdmin = user.isAdmin;
 }
 
 module.exports = User;
@@ -13,7 +14,8 @@ User.prototype.save = function(callback) {
     var user = {
         email: this.email,
         password: this.password,
-        nickname: this.nickname
+        nickname: this.nickname,
+        isAdmin: this.isAdmin
     };
 
     mongodb.open(function(err, db){
@@ -64,9 +66,9 @@ User.isExist = function(email, callback) {
     var condition = {email: email};
     User.get(condition, function(err, user) {
         if(err || user) {
-            callback(true)
+            callback(err, true)
         } else {
-            callback(false)
+            callback(err, false)
         }
     });
 };
