@@ -13,3 +13,10 @@ label.error {
 
 .topic-header { background-color: #CCC; padding: 8px; }
 
+.topic-list .cell { border-bottom: 1px solid #CCC; padding: 3px; }
+.topic-list .cell span { display: inline-block; overflow: hidden; }
+.topic-list .cell .topic-title { width: 55%; }
+.topic-list .cell .topic-count { width: 12%; }
+.topic-list .cell .topic-nickname { width: 12%; }
+.topic-list .cell .topic-time { width: 18%; }
+

@@ -4,6 +4,7 @@ function Topic(topic) {
     this.title = topic.title;
     this.content = topic.content;
     this.user = topic.user;
+    this.nickname = topic.nickname;
     this.time = topic.time;
     this.viewCount = topic.viewCount;
     this.replyCount = topic.replyCount;;
@@ -17,6 +18,7 @@ Topic.prototype.save = function(callback) {
         title: this.title,
         content: this.content,
         user: this.user,
+        nickname: this.nickname,
         time: this.time,
         viewCount: this.viewCount,
         replyCount: this.replyCount
@@ -42,7 +44,6 @@ Topic.prototype.save = function(callback) {
 };
 
 Topic.list = function(condition, callback){
-    console.log(1);
     mongodb.open(function(err, db){
         if(err){
             return callback(err);
@@ -61,11 +62,14 @@ Topic.list = function(condition, callback){
 
                 var topics = [];
                 docs.forEach(function(doc, index){
+                    var time = timeFormat(doc.time);
                     var topic = {
+                        _id: doc._id,
                         title: doc.title,
                         content: doc.content,
                         user: doc.user,
-                        time: doc.time,
+                        nickname: doc.nickname,
+                        time: time,
                         viewCount: doc.viewCount,
                         replyCount: doc.replyCount
                     };
@@ -76,4 +80,40 @@ Topic.list = function(condition, callback){
         });
     });
 };
+
+Topic.get = function(condition, callback){
+    mongodb.open(function(err, db){
+        if(err){
+            return callback(err);
+        }
+
+        db.collection('topic', function(err, collection) {
+            if(err){
+                mongodb.close();
+                return callback(err, null);
+            }
+            collection.findOne(condition, function(err, doc){
+                console.log(doc);
+                mongodb.close();
+                if(doc) {
+                    var topic = new Topic(doc);
+                    callback(err, topic);
+                } else {
+                    callback(err, null);
+                }
+            });
+        });
+    });
+};
+
+
+function timeFormat(time)
+{
+var year = time.getFullYear();
+var month = time.getMonth()+1;
+var date = time.getDate();
+var hour = time.getHours();
+var minute = time.getMinutes();
+return year + "-" + month + "-" + date + " " + hour + ":" + minute;
+}
 

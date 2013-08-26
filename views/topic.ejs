@@ -1,25 +1,14 @@
 <% include layout_top %>
 <div class="content">
 <div class="topic-header">
-话题列表
-<% if(user) { %>
-<a id="btn_new_topic" href="javascript:;">发布新话题</a>
-<% } %>
+<%= topic.title %>
 </div>
-<div class="topic-list">
-<% if(topics.length) { %>
-  <div class="cell">
-    <% topics.forEach(function(topic){ %>
-      <span class="topic-title">
-      <a href="/topic/<%= topic._id %>"><%= topic.title %></a>
-      </span>
-      <span class="topic-count"><%= topic.replyCount %>/<%= topic.viewCount %></span>
-      <span class="topic-nickname"><%= topic.nickname %></span>
-      <span class="topic-time"><%= topic.time %></span>
-    <% }) %>
-  </div>
-<% } %>
+<div class="cell">
+<span class="topic-count"><%= topic.replyCount %>/<%= topic.viewCount %></span>
+<span class="topic-nickname"><%= topic.nickname %></span>
+<span class="topic-time"><%= topic.time %></span>
 </div>
+<div class="topic-content"><%= topic.content %></div>
 </div>
 <div class="sidebar">
 侧栏

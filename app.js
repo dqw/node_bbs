@@ -66,6 +66,8 @@ app.post('/forgot_password', user.send_new_password);
 app.post('/new_topic', user.checkLogin);
 app.post('/new_topic', topic.new_topic);
 
+app.get('/topic/:topicId', topic.detail);
+
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
