@@ -37,6 +37,8 @@ Topic.prototype.save = function(callback) {
 
             collection.insert(topic, {safe: true}, function(err, topic){
                 mongodb.close();
+                topic = topic[0];
+                topic.time = timeFormat(topic.time);
                 callback(err, topic);
             });
         });

@@ -7,16 +7,17 @@ label.error {
   color: red;
 }
 
-.content { float: left; width:670px; min-height: 500px; border: 1px solid #CCC; }
-.sidebar { float: right; width:260px; min-height: 500px; border: 1px solid #CCC; }
-.footer { margin-top: 10px; border-top: 1px solid #CCC; }
+.content { float: left; width:670px; min-height: 500px; border: 1px solid #CCCCCC; }
+.sidebar { float: right; width:260px; min-height: 500px; border: 1px solid #CCCCCC; }
+.footer { margin-top: 10px; border-top: 1px solid #CCCCCC; }
 
-.topic-header { background-color: #CCC; padding: 8px; }
+.topic-header { background-color: #CCCCCC; padding: 8px; }
+.topic-header-title { display: inline-block; width: 85%; }
 
-.topic-list .cell { border-bottom: 1px solid #CCC; padding: 3px; }
+.topic-list .cell { border-bottom: 1px solid #E5E5E5; padding: 3px 10px; line-height: 28px; height: 28px; }
 .topic-list .cell span { display: inline-block; overflow: hidden; }
 .topic-list .cell .topic-title { width: 55%; }
-.topic-list .cell .topic-count { width: 12%; }
-.topic-list .cell .topic-nickname { width: 12%; }
-.topic-list .cell .topic-time { width: 18%; }
+.topic-list .cell .topic-count { width: 12%; color: #777777; }
+.topic-list .cell .topic-nickname { width: 12%; color: #777777; }
+.topic-list .cell .topic-time { width: 18%; color: #777777; font-size: 13px; }
 

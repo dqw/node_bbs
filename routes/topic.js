@@ -27,11 +27,12 @@ exports.new_topic = function(req, res){
         replyCount: 0
     });
 
-    newTopic.save(function(err) {
+    newTopic.save(function(err, topic) {
+        console.log(topic);
         if(err) {
             return res.json({result:false, message:'发布失败'});
         } else {
-            return res.json({result:true, message:'发布成功', topic: newTopic});
+            return res.json({result:true, message:'发布成功', topic: topic});
         }
     });
 };

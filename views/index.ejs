@@ -1,33 +1,44 @@
 <% include layout_top %>
 <div class="content">
 <div class="topic-header">
-话题列表
+<span class="topic-header-title">话题列表</span>
 <% if(user) { %>
-<a id="btn_new_topic" href="javascript:;">发布新话题</a>
+<a id="btn_new_topic" href="javascript:;" class="btn btn-primary">新话题</a>
 <% } %>
 </div>
-<div class="topic-list">
+<div id="topic_list" class="topic-list">
 <% if(topics.length) { %>
-  <div class="cell">
     <% topics.forEach(function(topic){ %>
+    <div class="cell">
       <span class="topic-title">
       <a href="/topic/<%= topic._id %>"><%= topic.title %></a>
       </span>
       <span class="topic-count"><%= topic.replyCount %>/<%= topic.viewCount %></span>
       <span class="topic-nickname"><%= topic.nickname %></span>
       <span class="topic-time"><%= topic.time %></span>
-    <% }) %>
   </div>
+  <% }) %>
 <% } %>
+<div class="pagination pagination-centered">
+<ul>
+<li class="disabled"><a href="#">Prev</a></li>
+<li class="active"><a href="#">1</a></li>
+<li><a href="#">2</a></li>
+<li><a href="#">3</a></li>
+<li><a href="#">4</a></li>
+<li><a href="#">5</a></li>
+<li><a href="#">Next</a></li>
+</ul>
+</div>
 </div>
 </div>
 <div class="sidebar">
 侧栏
 </div>
 <div id="modal_new_topic" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="myModalLabel">发布新话题</h3>
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+<h3 id="myModalLabel">发布新话题</h3>
   </div>
   <div class="modal-body">
     <form id="form_new_topic" action="new_topic" method="post">
@@ -52,6 +63,8 @@
 <script type="text/javascript">
 $(document).ready(function() {
     $("#btn_new_topic").click(function() {
+        $('#title').val('');
+        $('#content').val('');
         $('#modal_new_topic').modal('show');
     });
 
@@ -80,8 +93,16 @@ $(document).ready(function() {
             posting.done(function(data) {
                 if(data.result) {
                     $('#modal_new_topic').modal('hide');
+                    var $topic = $("#topic_list .cell").first().clone();
+                    $topic.find('a').attr('href', '/topic/' + data.topic._id).text(data.topic.title);
+                    $topic.find('.topic-count').text(data.topic.replyCount + '/' + data.topic.viewCount);
+                    $topic.find('.topic-nickname').text(data.topic.nickname);
+                    $topic.find('.topic-time').text(data.topic.time);
+                    $("#topic_list").prepend($topic);
+                    $topic.hide().fadeIn(2000);
+                } else {
+                    alert('发布失败');
                 }
-                alert(data.message);
             });
         }
     });
