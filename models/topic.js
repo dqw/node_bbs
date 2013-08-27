@@ -94,11 +94,10 @@ Topic.get = function(condition, callback){
                 mongodb.close();
                 return callback(err, null);
             }
-            collection.findOne(condition, function(err, doc){
-                console.log(doc);
+            collection.findOne(condition, function(err, topic){
                 mongodb.close();
-                if(doc) {
-                    var topic = new Topic(doc);
+                if(topic) {
+                    topic.time = timeFormat(topic.time);
                     callback(err, topic);
                 } else {
                     callback(err, null);

@@ -7,8 +7,9 @@ label.error {
   color: red;
 }
 
-.content { float: left; width:670px; min-height: 500px; border: 1px solid #CCCCCC; }
-.sidebar { float: right; width:260px; min-height: 500px; border: 1px solid #CCCCCC; }
+.border { border: 1px solid #CCCCCC; }
+.content { float: left; width:670px; }
+.sidebar { float: right; width:260px; }
 .footer { margin-top: 10px; border-top: 1px solid #CCCCCC; }
 
 .topic-header { background-color: #CCCCCC; padding: 8px; }
@@ -21,3 +22,12 @@ label.error {
 .topic-list .cell .topic-nickname { width: 12%; color: #777777; }
 .topic-list .cell .topic-time { width: 18%; color: #777777; font-size: 13px; }
 
+.topic-detail .topic-title { padding: 5px 10px; }
+.topic-detail .topic-content { padding: 5px 10px; }
+.topic-detail .topic-info { padding: 5px 10px; }
+.topic-detail .topic-info .topic-count { width: 12%; color: #777777; }
+.topic-detail .topic-info .topic-nickname { width: 12%; color: #777777; }
+.topic-detail .topic-info .topic-time { width: 18%; color: #777777; font-size: 13px; }
+
+.comment-list { margin-top: 10px; }
+.comment-list .comment-detail { padding: 5px 10px; }

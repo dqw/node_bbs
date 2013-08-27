@@ -1,14 +1,26 @@
 <% include layout_top %>
 <div class="content">
-<div class="topic-header">
-<%= topic.title %>
+<div class="topic-detail border">
+<div class="topic-header">话题详情</div>
+<div class="topic-title"><h3><%= topic.title %></h3><hr /></div>
+<div class="topic-content"><%= topic.content %><hr /></div>
+<div class="topic-info">
+<span class="topic-nickname">作者：<%= topic.nickname %></span>
+<span class="topic-time">发布时间：<%= topic.time %></span>
+<span class="topic-count">查看数：<%= topic.viewCount %></span>
 </div>
-<div class="cell">
-<span class="topic-count"><%= topic.replyCount %>/<%= topic.viewCount %></span>
-<span class="topic-nickname"><%= topic.nickname %></span>
-<span class="topic-time"><%= topic.time %></span>
 </div>
-<div class="topic-content"><%= topic.content %></div>
+<div class="comment-list border">
+<div class="topic-header"><%= topic.replyCount%>评论</div>
+<div class="comment-detail">
+<div class="comment-info">
+<span class="topic-nickname">作者：<%= topic.nickname %></span>
+<span class="topic-time">发布时间：<%= topic.time %></span>
+<span class="topic-count">查看数：<%= topic.viewCount %></span>
+</div>
+<div class="comment-content"><%= topic.content %></div>
+</div>
+</div>
 </div>
 <div class="sidebar">
 侧栏
