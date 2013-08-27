@@ -11,7 +11,9 @@
 </div>
 </div>
 <div class="comment-list border">
-<div class="topic-header"><%= topic.replyCount%>评论</div>
+<div class="topic-header"><%= topic.replyCount%>评论
+<a id="btn_new_comment" href="javascript:;" class="btn btn-primary">新评论</a>
+</div>
 <div class="comment-detail">
 <div class="comment-info">
 <span class="topic-nickname">作者：<%= topic.nickname %></span>
@@ -25,20 +27,16 @@
 <div class="sidebar">
 侧栏
 </div>
-<div id="modal_new_topic" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div id="modal_new_comment" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="myModalLabel">发布新话题</h3>
+    <h3 id="myModalLabel">发布新评论</h3>
   </div>
   <div class="modal-body">
-    <form id="form_new_topic" action="new_topic" method="post">
+    <form id="form_new_comment" action="new_topic_comment" method="post">
+    <input id="topic_id" name="topic_id" type="hidden" value="<%= topic._id %>"/>
         <fieldset>
             <p>
-            <label>标题</label>
-            <input id="title" type="text" name="title" class="input-xlarge">
-            </p>
-            <p>
-            <label>正文</label>
             <textarea id="content" name="content" rows="10" cols="30" class="input-xlarge"></textarea>
             </p>
         </fieldset>
@@ -46,43 +44,36 @@
   </div>
   <div class="modal-footer">
     <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
-    <button id="btn_topic_publish" class="btn btn-primary">发布</button>
+    <button id="btn_comment_publish" class="btn btn-primary">发布</button>
   </div>
 </div>
 <script type="text/javascript" src='/javascripts/jquery.validate.min.js'></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    $("#btn_new_topic").click(function() {
-        $('#modal_new_topic').modal('show');
+    $("#btn_new_comment").click(function() {
+        $('#modal_new_comment').modal('show');
     });
 
-    $('#form_new_topic').validate({
+    $('#form_new_comment').validate({
         rules : {
-            title: {
-                required: true
-            },
             content: {
                 required: true
             }
         },
         messages : {
-            title: {
-                required : '标题不能为空'
-            },
             content: {
-                required: '正文不能为空'
+                required: '评论不能为空'
             }
         }
     });
 
-    $("#btn_topic_publish").click(function() {
-        if($("#form_new_topic").valid()) {
-            var posting = $.post("new_topic", $("#form_new_topic").serialize());
+    $("#btn_comment_publish").click(function() {
+        if($("#form_new_comment").valid()) {
+            var posting = $.post("new_topic_comment", $("#form_new_comment").serialize());
             posting.done(function(data) {
                 if(data.result) {
                     $('#modal_new_topic').modal('hide');
                 }
-                alert(data.message);
             });
         }
     });

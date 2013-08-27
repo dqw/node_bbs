@@ -45,6 +45,31 @@ Topic.prototype.save = function(callback) {
     });
 };
 
+Topic.update = function(topicId, newValue, callback) {
+    mongodb.open(function(err, db){
+        if(err){
+            return callback(err);
+        }
+
+        db.collection('topic', function(err, collection){
+            if(err){
+                mongodb.close();
+                return callback(err);
+            }
+
+            collection.update({"_id": topicId} ,{"$set": newValue}, function(err){
+                mongodb.close();
+                if(err) {
+                    callback(false);
+                } else {
+                    callback(true);
+                }
+            });
+        });
+    });
+};
+
+
 Topic.list = function(condition, callback){
     mongodb.open(function(err, db){
         if(err){
@@ -108,13 +133,12 @@ Topic.get = function(condition, callback){
 };
 
 
-function timeFormat(time)
-{
-var year = time.getFullYear();
-var month = time.getMonth()+1;
-var date = time.getDate();
-var hour = time.getHours();
-var minute = time.getMinutes();
-return year + "-" + month + "-" + date + " " + hour + ":" + minute;
+function timeFormat(time) {
+    var year = time.getFullYear();
+    var month = time.getMonth()+1;
+    var date = time.getDate();
+    var hour = time.getHours();
+    var minute = time.getMinutes();
+    return year + "-" + month + "-" + date + " " + hour + ":" + minute;
 }
 

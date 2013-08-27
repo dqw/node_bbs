@@ -68,6 +68,10 @@ app.post('/new_topic', topic.new_topic);
 
 app.get('/topic/:topicId', topic.detail);
 
+app.post('/new_topic_comment', user.checkLogin);
+app.post('/new_topic_comment', topic.new_topic_comment);
+
+
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
