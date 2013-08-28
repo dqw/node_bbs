@@ -60,9 +60,9 @@ Topic.update = function(condition, newValue, callback) {
             collection.update(condition, newValue, function(err){
                 mongodb.close();
                 if(err) {
-                    callback(false);
+                    callback(err, false);
                 } else {
-                    callback(true);
+                    callback(err, true);
                 }
             });
         });

@@ -40,11 +40,11 @@ exports.new_topic = function(req, res){
 //新话题保存
 exports.new_topic_comment = function(req, res){
     if(!req.body.topic_id) {
-        return res.send('参数错误');
+        return res.json({result:false, message:'参数错误'});
     }
 
-    if(!req.body.title) {
-        return res.send('评论不能为空');
+    if(!req.body.content) {
+        return res.json({result:false, message:'评论不能为空'});
     }
 
     var nickname = req.session.nickname;
@@ -53,21 +53,20 @@ exports.new_topic_comment = function(req, res){
     }
 
     var newComment = {
-        title: req.body.title,
         content: req.body.content,
         user: req.session.user, 
         nickname: nickname, 
-        time: new Date(),
-        viewCount: 0,
-        replyCount: 0
+        time: new Date()
     };
 
-    Topic.save(function(err, topic) {
-        console.log(topic);
+    var topicId = new BSON.ObjectID(req.body.topic_id);
+    var condition = { _id: topicId  };
+
+    Topic.update(condition, {"$push": {"comment": newComment}}, function(err, comment) {
         if(err) {
             return res.json({result:false, message:'发布失败'});
         } else {
-            return res.json({result:true, message:'发布成功', topic: topic});
+            return res.json({result:true, message:'发布成功', comment: newComment});
         }
     });
 };
