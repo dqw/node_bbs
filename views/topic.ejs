@@ -12,7 +12,9 @@
 </div>
 <div class="comment-list border">
 <div class="topic-header"><%= topic.replyCount%>评论
+<% if(user) { %>
 <a id="btn_new_comment" href="javascript:;" class="btn btn-primary">新评论</a>
+<% } %>
 </div>
 <div class="comment-detail">
 <div class="comment-info">

@@ -45,7 +45,7 @@ Topic.prototype.save = function(callback) {
     });
 };
 
-Topic.update = function(topicId, newValue, callback) {
+Topic.update = function(condition, newValue, callback) {
     mongodb.open(function(err, db){
         if(err){
             return callback(err);
@@ -57,7 +57,7 @@ Topic.update = function(topicId, newValue, callback) {
                 return callback(err);
             }
 
-            collection.update({"_id": topicId} ,{"$set": newValue}, function(err){
+            collection.update(condition, newValue, function(err){
                 mongodb.close();
                 if(err) {
                     callback(false);

@@ -73,11 +73,11 @@ exports.new_topic_comment = function(req, res){
 };
 
 exports.detail = function(req, res){
-    console.log(req.params.topicId);
     var topicId = new BSON.ObjectID(req.params.topicId);
     var condition = { _id: topicId  };
     Topic.get(condition, function(err, topic) {
         if(topic) {
+            Topic.update(condition, {"$inc": {"viewCount": 1}});
             return res.render('topic', { topic: topic });
         } else {
             return res.send('不存在');
