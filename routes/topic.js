@@ -62,7 +62,7 @@ exports.new_topic_comment = function(req, res){
     var topicId = new BSON.ObjectID(req.body.topic_id);
     var condition = { _id: topicId  };
 
-    Topic.update(condition, {"$push": {"comment": newComment}}, function(err, comment) {
+    Topic.update(condition, {"$inc": {"replyCount": 1}, "$push": {"comment": newComment}}, function(err, comment) {
         if(err) {
             return res.json({result:false, message:'发布失败'});
         } else {
