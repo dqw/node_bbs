@@ -5,9 +5,16 @@
         <div class="topic-title"><h3><%= topic.title %></h3><hr /></div>
         <div class="topic-content"><%= topic.content %><hr /></div>
         <div class="topic-info">
+            <p>
             <span class="topic-nickname">作者：<%= topic.nickname %></span>
             <span class="topic-time">发布时间：<%= topic.time %></span>
             <span class="topic-time">查看数：<%= topic.viewCount %></span>
+            </p>
+            <p>
+            <% if(user === topic.user) { %>
+            <a id="btn_drop_topic" href="javascript:;" class="btn btn-primary" data-topic-id="<%= topic._id %>">删除话题</a>
+            <% } %>
+            </p>
         </div>
     </div>
     <div class="comment-list border">
@@ -70,7 +77,15 @@
 <script type="text/javascript" src='/javascripts/jquery.validate.min.js'></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    $("#btn_new_comment").click(function() {
+    $("#btn_drop_topic").on("click", function() {
+        var topicId = $(this).attr("data-topic-id");
+        $.post('/drop_topic', {"topic_id": topicId}, function(data) {
+            alert(data.message);
+            window.location.href = "/";
+        });
+    });
+
+    $("#btn_new_comment").on("click", function() {
         $("#content").val("");
         $("#modal_new_comment").modal("show");
     });

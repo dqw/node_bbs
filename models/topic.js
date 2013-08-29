@@ -132,6 +132,29 @@ Topic.get = function(condition, callback){
     });
 };
 
+Topic.drop = function(condition, callback) {
+    mongodb.open(function(err, db){
+        if(err){
+            return callback(err);
+        }
+
+        db.collection('topic', function(err, collection) {
+            if(err){
+                mongodb.close();
+                return callback(err, null);
+            }
+            collection.remove(condition, function(err){
+                mongodb.close();
+                if(err) {
+                    callback(err, false);
+                } else {
+                    callback(err, true);
+                }
+            });
+        });
+    });
+};
+
 
 function timeFormat(time) {
     var year = time.getFullYear();

@@ -61,16 +61,18 @@ app.post('/change_password', user.checkLogin);
 app.post('/change_password', user.changePassword);
 
 app.get('/forgot_password', user.forgot_password);
-app.post('/forgot_password', user.send_new_password);
+app.post('/forgot_password', user.sendNewPassword);
 
 app.post('/new_topic', user.checkLogin);
-app.post('/new_topic', topic.new_topic);
+app.post('/new_topic', topic.newTopic);
 
 app.get('/topic/:topicId', topic.detail);
 
 app.post('/new_topic_comment', user.checkLogin);
-app.post('/new_topic_comment', topic.new_topic_comment);
+app.post('/new_topic_comment', topic.newTopicComment);
 
+app.post('/drop_topic', user.checkLogin);
+app.post('/drop_topic', topic.dropTopic);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

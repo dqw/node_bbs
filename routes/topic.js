@@ -3,7 +3,7 @@ var mongo = require('mongodb');
 var BSON = mongo.BSONPure;
 
 //新话题保存
-exports.new_topic = function(req, res){
+exports.newTopic = function(req, res){
     if(!req.body.title) {
         return res.json({result:false, message:'标题不能为空'});
     }
@@ -38,7 +38,7 @@ exports.new_topic = function(req, res){
 };
 
 //新话题保存
-exports.new_topic_comment = function(req, res){
+exports.newTopicComment = function(req, res){
     if(!req.body.topic_id) {
         return res.json({result:false, message:'参数错误'});
     }
@@ -63,6 +63,7 @@ exports.new_topic_comment = function(req, res){
     var condition = { _id: topicId  };
 
     Topic.update(condition, {"$inc": {"replyCount": 1}, "$push": {"comment": newComment}}, function(err, comment) {
+        console.log(comment);
         if(err) {
             return res.json({result:false, message:'发布失败'});
         } else {
@@ -71,6 +72,7 @@ exports.new_topic_comment = function(req, res){
     });
 };
 
+//话题详情
 exports.detail = function(req, res){
     var topicId = new BSON.ObjectID(req.params.topicId);
     var condition = { _id: topicId  };
@@ -82,4 +84,28 @@ exports.detail = function(req, res){
             return res.send('不存在');
         }
     });
+};
+
+// 删除话题
+exports.dropTopic = function(req, res){
+    var topicId = new BSON.ObjectID(req.body.topic_id);
+    var condition = { _id: topicId  };
+    Topic.get(condition, function(err, topic) {
+        if(topic) {
+            if(topic.user === req.session.user) {
+                Topic.drop(condition, function(err, result) {
+                    if(result) {
+                        return res.json({result:true, message:'删除成功'});
+                    } else {
+                        return res.json({result:false, message:'删除失败'});
+                    }
+                });
+            } else {
+                return res.json({result:false, message:'参数错误'});
+            }
+        } else {
+            return res.json({result:false, message:'文章不存在'});
+        }
+    });
+
 };

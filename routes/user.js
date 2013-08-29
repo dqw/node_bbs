@@ -164,7 +164,7 @@ exports.forgot_password = function(req, res){
 };
 
 //发送新密码
-exports.send_new_password = function(req, res){
+exports.sendNewPassword = function(req, res){
     User.isExist(req.body.email, function(result) {
         if(result) {
             var newPassword = Math.random().toString(36).substring(11);
