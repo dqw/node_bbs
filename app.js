@@ -74,6 +74,9 @@ app.post('/new_topic_comment', topic.newTopicComment);
 app.post('/drop_topic', user.checkLogin);
 app.post('/drop_topic', topic.dropTopic);
 
+app.post('/drop_comment', user.checkLogin);
+app.post('/drop_comment', topic.dropComment);
+
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });

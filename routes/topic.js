@@ -1,6 +1,8 @@
 var Topic = require('../models/topic.js');
 var mongo = require('mongodb');
 var BSON = mongo.BSONPure;
+var ObjectID = require('mongodb').ObjectID;
+var timeFormat = require('../common/function').timeFormat;
 
 //新话题保存
 exports.newTopic = function(req, res){
@@ -53,10 +55,11 @@ exports.newTopicComment = function(req, res){
     }
 
     var newComment = {
+        commentId: ObjectID(),
         content: req.body.content,
         user: req.session.user, 
         nickname: nickname, 
-        time: new Date()
+        time: timeFormat(new Date())
     };
 
     var topicId = new BSON.ObjectID(req.body.topic_id);
@@ -107,5 +110,29 @@ exports.dropTopic = function(req, res){
             return res.json({result:false, message:'文章不存在'});
         }
     });
+};
 
+// 删除评论
+exports.dropComment = function(req, res){
+    var topicId = new BSON.ObjectID(req.body.topic_id);
+    var commentId = new BSON.ObjectID(req.body.comment_id);
+    var condition = { 
+        "_id": topicId,
+        "comment.commentId": commentId,
+        "comment.user": req.session.user 
+    };
+    Topic.get(condition, function(err, topic) {
+        if(topic) {
+            var newValue = {"$inc": {"replyCount": -1}, "$pull": {"comment": {"commentId": commentId}}}; 
+            Topic.update({"_id": topicId}, newValue, function(err, result) {
+                if(result) {
+                    return res.json({result:true, message:'删除成功'});
+                } else {
+                    return res.json({result:false, message:'删除失败'});
+                }
+            });
+        } else {
+            return res.json({result:false, message:'删除失败'});
+        }
+    });
 };

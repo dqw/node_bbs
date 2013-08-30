@@ -1,4 +1,5 @@
 var mongodb = require('./db');
+var timeFormat = require('../common/function').timeFormat;
 
 function Topic(topic) {
     this.title = topic.title;
@@ -154,14 +155,3 @@ Topic.drop = function(condition, callback) {
         });
     });
 };
-
-
-function timeFormat(time) {
-    var year = time.getFullYear();
-    var month = time.getMonth()+1;
-    var date = time.getDate();
-    var hour = time.getHours();
-    var minute = time.getMinutes();
-    return year + "-" + month + "-" + date + " " + hour + ":" + minute;
-}
-

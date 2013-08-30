@@ -30,4 +30,9 @@ label.error {
 .topic-detail .topic-info .topic-time { width: 18%; color: #777777; font-size: 13px; }
 
 .comment-list { margin-top: 10px; }
-.comment-list .comment-detail { padding: 5px 10px; }
+.comment-list .comment-detail { padding: 5px 10px; border-bottom: 1px solid #E5E5E5; }
+.comment-list .comment-detail .comment-nickname { display: inline-block; width: 85%; color: #777777; }
+.comment-list .comment-detail .floor { display: inline-block; width: 8%; text-align: right; }
+.comment-list .comment-detail .drop { display: inline-block; width: 5%; }
+.comment-list .comment-content { margin-top: 5px; }
+.new-comment { padding: 5px 10px; }

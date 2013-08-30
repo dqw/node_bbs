@@ -18,20 +18,20 @@
         </div>
     </div>
     <div class="comment-list border">
-        <div class="topic-header"><%= topic.replyCount%>评论
-            <% if(user) { %>
-            <a id="btn_new_comment" href="javascript:;" class="btn btn-primary">新评论</a>
-            <% } %>
-        </div>
+        <div class="topic-header"><%= topic.replyCount%>评论</div>
         <div id="comment_list">
         <% if(topic.comment) { %>
         <% var floor = 1; %>
         <% topic.comment.forEach(function(comment){ %>
         <div class="comment-detail">
             <div class="comment-info">
-                <span class="topic-nickname">作者：<%= comment.nickname %></span>
-                <span class="topic-time">发布时间：<%= comment.time %></span>
-                <span class="floor">#<%= floor %></span>
+                <span class="comment-nickname"><%= comment.nickname %> <em><%= comment.time %></em></span>
+                <span class="floor" data-floor="<%= floor %>">#<%= floor %></span>
+                <span class="drop">
+                <% if(user === comment.user) { %>
+                <a class="btn_drop_comment" href="javascript:;" data-topic-id="<%= topic._id %>" data-comment-id="<%= comment.commentId %>">删除</a>
+                <% } %>
+                </span>
             </div>
             <div class="comment-content"><%= comment.content %></div>
         </div>
@@ -39,6 +39,16 @@
         <% }) %>
         <% } %>
         </div>
+        <% if(user) { %>
+        <div class="new-comment">
+        <h4>发布新评论</h4>
+        <form id="form_new_comment" action="/new_topic_comment" method="post">
+            <input id="topic_id" name="topic_id" type="hidden" value="<%= topic._id %>"/>
+            <textarea id="content" name="content" rows="3" cols="35" class="input-xlarge"></textarea>
+            <p><a id="btn_comment_publish" class="btn btn-primary" href="javascript:;">发布</a></p>
+        </form>
+        </div>  
+        <% } %>
     </div>
 </div>
 <div class="sidebar">
@@ -46,49 +56,40 @@
 </div>
 <div id="topic_comment_template" style="display:none;">
     <div class="comment-detail" style="display:none;">
-        <div class="comment-info">
-            <span class="topic-nickname"></span>
-            <span class="topic-time"></span>
-            <span class="floor">新回复</span>
+            <div class="comment-info">
+                <span class="comment-nickname"></span>
+                <span class="floor">#<%= floor %></span>
+                <span class="drop">
+                <a class="btn_drop_comment" href="javascript:;" data-topic-id="<%= topic._id %>" data-comment-id="">删除</a>
+                </span>
+            </div>
+            <div class="comment-content"></div>
         </div>
-        <div class="comment-content"></div>
-    </div>
-</div>
-<div id="modal_new_comment" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="myModalLabel">发布新评论</h3>
-    </div>
-    <div class="modal-body">
-        <form id="form_new_comment" action="/new_topic_comment" method="post">
-            <input id="topic_id" name="topic_id" type="hidden" value="<%= topic._id %>"/>
-            <fieldset>
-                <p>
-                <textarea id="content" name="content" rows="10" cols="30" class="input-xlarge"></textarea>
-                </p>
-            </fieldset>
-        </form>
-    </div>
-    <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
-        <button id="btn_comment_publish" class="btn btn-primary">发布</button>
-    </div>
 </div>
 <script type="text/javascript" src='/javascripts/jquery.validate.min.js'></script>
 <script type="text/javascript">
 $(document).ready(function() {
     $("#btn_drop_topic").on("click", function() {
-        var topicId = $(this).attr("data-topic-id");
-        $.post('/drop_topic', {"topic_id": topicId}, function(data) {
-            alert(data.message);
-            window.location.href = "/";
-        });
+        if(confirm("确认删除")) {
+            var topicId = $(this).attr("data-topic-id");
+            $.post('/drop_topic', {"topic_id": topicId}, function(data) {
+                alert(data.message);
+                window.location.href = "/";
+            });
+        }
     });
 
-    $("#btn_new_comment").on("click", function() {
-        $("#content").val("");
-        $("#modal_new_comment").modal("show");
+    $(".comment-list").on("click", ".btn_drop_comment", function() {
+        if(confirm("确认删除")) {
+            var that = this;
+            var topicId = $(this).attr("data-topic-id");
+            var commentId = $(this).attr("data-comment-id");
+            $.post('/drop_comment', {"topic_id": topicId, "comment_id": commentId}, function(data) {
+                $(that).parents(".comment-detail").remove();
+            });
+        }
     });
+
 
     $('#form_new_comment').validate({
         rules : {
@@ -106,14 +107,17 @@ $(document).ready(function() {
     $("#btn_comment_publish").click(function() {
         if($("#form_new_comment").valid()) {
             var posting = $.post("/new_topic_comment", $("#form_new_comment").serialize());
+            $("#content").val('');
             posting.done(function(data) {
                 if(data.result) {
-                    $('#modal_new_comment').modal('hide');
                     var $comment = $("#topic_comment_template").find(".comment-detail").clone();
-                    $comment.find('.topic-nickname').text("作者：" + data.comment.nickname);
-                    $comment.find('.topic-time').text("发布时间：" + data.comment.time);
+                    $comment.find('.comment-nickname').text(data.comment.nickname + ' ' + data.comment.time);
+                    var floor = $('#comment_list').find('.comment-detail').last().find('.floor').attr('data-floor');
+                    floor = parseInt(floor, 10) + 1;
+                    $comment.find('.floor').text("#" + floor).attr("data-floor", floor );
+                    $comment.find('.btn_drop_comment').attr("data-comment-id", data.comment.commentId);
                     $comment.find('.comment-content').text(data.comment.content);
-                    $("#comment_list").prepend($comment);
+                    $("#comment_list").append($comment);
                     $comment.fadeIn(2000);
                 } else {
                     alert('发布失败');
