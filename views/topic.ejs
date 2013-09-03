@@ -113,7 +113,11 @@ $(document).ready(function() {
                     var $comment = $("#topic_comment_template").find(".comment-detail").clone();
                     $comment.find('.comment-nickname').text(data.comment.nickname + ' ' + data.comment.time);
                     var floor = $('#comment_list').find('.comment-detail').last().find('.floor').attr('data-floor');
-                    floor = parseInt(floor, 10) + 1;
+                    if(typeof floor == 'undefined') {
+                        floor = 1;
+                    } else {
+                        floor = parseInt(floor, 10) + 1;
+                    }
                     $comment.find('.floor').text("#" + floor).attr("data-floor", floor );
                     $comment.find('.btn_drop_comment').attr("data-comment-id", data.comment.commentId);
                     $comment.find('.comment-content').text(data.comment.content);
