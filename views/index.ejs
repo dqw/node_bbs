@@ -21,13 +21,13 @@
         <% } %>
         <div class="pagination pagination-centered">
             <ul>
-                <li class="disabled"><a href="#">Prev</a></li>
-                <li class="active"><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">4</a></li>
-                <li><a href="#">5</a></li>
-                <li><a href="#">Next</a></li>
+                <li class="<%= pagination.first.state %>"><a href="<%= pagination.first.href %>"><<</a></li>
+                <li class="<%= pagination.pre.state %>"><a href="<%= pagination.pre.href %>"><</a></li>
+                <% for(var i = 0, j = pagination.pages.length; i < j; i++) { %>
+                <li class="<%= pagination.pages[i].state %>"><a href="<%= pagination.pages[i].href %>"><%= pagination.pages[i].count %></a></li>
+                <% } %>
+                <li class="<%= pagination.next.state %>"><a href="<%= pagination.next.href %>">></a></li>
+                <li class="<%= pagination.last.state %>"><a href="<%= pagination.last.href %>">>></a></li>
             </ul>
         </div>
     </div>

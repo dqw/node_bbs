@@ -71,7 +71,7 @@ Topic.update = function(condition, newValue, callback) {
 };
 
 
-Topic.list = function(condition, callback){
+Topic.list = function(condition, skip, limit, callback){
     mongodb.open(function(err, db){
         if(err){
             return callback(err);
@@ -82,7 +82,7 @@ Topic.list = function(condition, callback){
                 mongodb.close();
                 return callback(err, null);
             }
-            collection.find(condition).toArray(function(err, docs){
+            collection.find(condition).skip(skip).limit(limit).sort({time: -1}).toArray(function(err, docs){
                 mongodb.close();
                 if(err){
                     return callback(err, null);
@@ -125,6 +125,29 @@ Topic.get = function(condition, callback){
                 if(topic) {
                     topic.time = timeFormat(topic.time);
                     callback(err, topic);
+                } else {
+                    callback(err, null);
+                }
+            });
+        });
+    });
+};
+
+Topic.count = function(condition, callback){
+    mongodb.open(function(err, db){
+        if(err){
+            return callback(err);
+        }
+
+        db.collection('topic', function(err, collection) {
+            if(err){
+                mongodb.close();
+                return callback(err, null);
+            }
+            collection.count(condition, function(err, count){
+                mongodb.close();
+                if(!err) {
+                    callback(err, count);
                 } else {
                     callback(err, null);
                 }

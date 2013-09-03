@@ -29,8 +29,7 @@ exports.newTopic = function(req, res){
         replyCount: 0
     });
 
-    newTopic.save(function(err, topic) {
-        console.log(topic);
+   newTopic.save(function(err, topic) {
         if(err) {
             return res.json({result:false, message:'发布失败'});
         } else {
