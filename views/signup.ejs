@@ -8,6 +8,10 @@
             <input id="email" type="text" name="email">
             </p>
             <p>
+            <label>昵称</label>
+            <input id="nickname" type="text" name="nickname">
+            </p>
+            <p>
             <label>密码</label>
             <input id="password" type="password" name="password">
             </p>
@@ -39,6 +43,10 @@ $('#form_signup').validate({
                     }
                 }
             },
+            nickname: {
+                required: true,
+                maxlength: 20
+            },
             password: {
                 required: true,
                 minlength: 6
@@ -53,6 +61,10 @@ $('#form_signup').validate({
                 required : '邮箱不能为空',
                 email: '请填写正确的邮箱地址',
                 remote: '该邮箱已存在'
+            },
+            nickname: {
+                required : '昵称不能为空',
+                maxlength: '最多20个字'
             },
             password: {
                 required: '密码不能为空',

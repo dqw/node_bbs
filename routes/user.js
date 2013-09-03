@@ -11,6 +11,19 @@ exports.signup = function(req, res){
 
 //新用户保存
 exports.save = function(req, res){
+
+    var email = req.body.email;
+    if(email === '') {
+        req.session.message = '邮箱不能为空';
+        return res.redirect('/signup');
+    }
+
+    var nickname = req.body.nickname;
+    if(nickname === '' || nickname.length > 20) {
+        req.session.message = '昵称不能为空且不能大于20个字';
+        return res.redirect('/signup');
+    }
+
     if(req.body.password.length < 6) {
         req.session.message = '密码最少6位';
         return res.redirect('/signup');
@@ -30,9 +43,9 @@ exports.save = function(req, res){
         }
 
         var newUser = new User({
-            email: req.body.email,
+            email: email,
+            nickname: nickname,
             password: password,
-            nickname: '',
             isAdmin: isAdmin
         });
 
