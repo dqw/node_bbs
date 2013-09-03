@@ -7,23 +7,23 @@ exports.timeFormat = function(time) {
     return year + "-" + month + "-" + date + " " + hour + ":" + minute;
 }
 
-exports.getPagination = function(currentPage, totalPage) {
+exports.getPagination = function(currentPage, totalPage, searchKey) {
     var pagination = {};
 
     if(currentPage === 1) {
         pagination.first = { href:"javascript:;", state: 'disabled'};
         pagination.pre = { href:"javascript:;", state: 'disabled'};
     } else {
-        pagination.first = { href:'?page=1', state: ''};
-        pagination.pre = { href:'?page=' + (currentPage - 1), state: ''};
+        pagination.first = { href:'?key=' + searchKey + '&page=1', state: ''};
+        pagination.pre = { href:'?key=' + searchKey + '&page=' + (currentPage - 1), state: ''};
     }
 
     if(currentPage === totalPage) {
         pagination.next = { href:"javascript:;", state: 'disabled'};
         pagination.last = { href:"javascript:;", state: 'disabled'};
     } else {
-        pagination.next = { href:'?page=' + (currentPage + 1), state: ''};
-        pagination.last = { href:'?page=' + totalPage, state: ''};
+        pagination.next = { href:'?key=' + searchKey + '&page=' + (currentPage + 1), state: ''};
+        pagination.last = { href:'?key=' + searchKey + '&page=' + totalPage, state: ''};
     }
 
     if(currentPage < 3) {
@@ -41,9 +41,9 @@ exports.getPagination = function(currentPage, totalPage) {
     var j = (startPage + 4) < totalPage ? startPage + 4 : totalPage;
     for(var i = startPage; i <= j; i++) {
         if(currentPage === i) {
-            pagination.pages.push({ href: '?page=' + i, count: i, state: 'active' });
+            pagination.pages.push({ href:'?key=' + searchKey + '&page=' + i, count: i, state: 'active' });
         } else {
-            pagination.pages.push({ href: '?page=' + i, count: i, state: '' });
+            pagination.pages.push({ href:'?key=' + searchKey + '&page=' + i, count: i, state: '' });
         }
     }
     return pagination;

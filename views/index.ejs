@@ -1,5 +1,9 @@
 <% include layout_top %>
 <div class="content">
+    <form action="/" method="get">
+    <input name="key" type="text" class="search-query span3" value="<%= searchKey %>" />
+    <input type="submit" value="搜索" class="btn btn-primary" />
+    </form>
     <div class="topic-header">
         <span class="topic-header-title">话题列表</span>
         <% if(user) { %>
