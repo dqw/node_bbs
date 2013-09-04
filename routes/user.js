@@ -1,8 +1,6 @@
 var User = require('../models/user.js');
-var crypto = require('crypto');
-var config = require('../config.js');
-var nodemailer = require("nodemailer");
-
+var sendEmail = require('../common/function').sendEmail;
+var getHashPassword = require('../common/function').getHashPassword;
 
 //新用户注册
 exports.signup = function(req, res){
@@ -178,7 +176,7 @@ exports.forgot_password = function(req, res){
 
 //发送新密码
 exports.sendNewPassword = function(req, res){
-    User.isExist(req.body.email, function(result) {
+    User.isExist(req.body.email, function(err, result) {
         if(result) {
             var newPassword = Math.random().toString(36).substring(11);
 
@@ -204,40 +202,6 @@ exports.sendNewPassword = function(req, res){
         }
     });
 };
-
-function sendEmail(mail) {
-    var transport = nodemailer.createTransport("SMTP", {
-        host: config.system_email_smtp, // hostname
-        secureConnection: true, // use SSL
-        port: 465, // port for secure SMTP
-        auth: {
-            user: config.system_email,
-            pass: config.system_email_password 
-        }
-    });
-
-    var mailOptions = {
-        from: config.title + "<" + config.system_email +">", // sender address
-        to: mail.email, // list of receivers
-        subject: mail.title, // Subject line
-        text: mail.title + mail.text // plaintext body
-    }
-
-    transport.sendMail(mailOptions, function(error, response){
-        if(error){
-            console.log(error);
-        }else{
-            console.log("Message sent: " + response.message);
-        }
-
-        transport.close(); // shut down the connection pool, no more messages
-    });
-}
-
-function getHashPassword(password) {
-    var md5sum = crypto.createHash('md5');
-    return md5sum.update(password).digest('hex');
-}
 
 
 

@@ -65,7 +65,7 @@ User.get = function(condition, callback){
 User.isExist = function(email, callback) {
     var condition = {email: email};
     User.get(condition, function(err, user) {
-        if(err || user) {
+        if(user) {
             callback(err, true)
         } else {
             callback(err, false)

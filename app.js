@@ -66,6 +66,9 @@ app.post('/forgot_password', user.sendNewPassword);
 app.post('/new_topic', user.checkLogin);
 app.post('/new_topic', topic.newTopic);
 
+app.post('/modify_topic', user.checkLogin);
+app.post('/modify_topic', topic.modifyTopic);
+
 app.get('/topic/:topicId', topic.detail);
 
 app.post('/new_topic_comment', user.checkLogin);

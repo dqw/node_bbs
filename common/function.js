@@ -1,3 +1,42 @@
+var crypto = require('crypto');
+var config = require('../config.js');
+var nodemailer = require("nodemailer");
+
+exports.sendEmail = function(mail) {
+    var transport = nodemailer.createTransport("SMTP", {
+        host: config.system_email_smtp, // hostname
+        secureConnection: true, // use SSL
+        port: 465, // port for secure SMTP
+        auth: {
+            user: config.system_email,
+            pass: config.system_email_password 
+        }
+    });
+
+    var mailOptions = {
+        from: config.title + "<" + config.system_email +">", // sender address
+        to: mail.email, // list of receivers
+        subject: mail.title, // Subject line
+        text: mail.title + mail.text // plaintext body
+    }
+
+    transport.sendMail(mailOptions, function(error, response){
+        if(error){
+            console.log(error);
+        }else{
+            console.log("Message sent: " + response.message);
+        }
+
+        transport.close(); // shut down the connection pool, no more messages
+    });
+}
+
+exports.getHashPassword = function(password) {
+    var md5sum = crypto.createHash('md5');
+    return md5sum.update(password).digest('hex');
+}
+
+
 exports.timeFormat = function(time) {
     var year = time.getFullYear();
     var month = time.getMonth()+1;

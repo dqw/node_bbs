@@ -38,6 +38,33 @@ exports.newTopic = function(req, res){
     });
 };
 
+//编辑话题
+exports.modifyTopic = function(req, res){
+    if(!req.body.title) {
+        return res.json({result:false, message:'标题不能为空'});
+    }
+
+    if(!req.body.content) {
+        return res.json({result:false, message:'正文不能为空'});
+    }
+
+    var topicId = new BSON.ObjectID(req.body.topic_id);
+    var condition = { _id: topicId  };
+    Topic.get(condition, function(err, topic) {
+        if(topic) {
+            if(topic.user === req.session.user) {
+                Topic.update(condition, {"$set": {"title": req.body.title, "content": req.body.content}});
+                return res.redirect('/topic/' + topicId);
+            } else {
+                return res.send('非法操作');
+            }
+        } else {
+            return res.send('不存在');
+        }
+    });
+};
+
+
 //新话题保存
 exports.newTopicComment = function(req, res){
     if(!req.body.topic_id) {

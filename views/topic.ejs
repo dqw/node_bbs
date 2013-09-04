@@ -12,6 +12,7 @@
             </p>
             <p>
             <% if(user === topic.user) { %>
+            <a id="btn_modify_topic" href="javascript:;" class="btn btn-primary">编辑话题</a>
             <a id="btn_drop_topic" href="javascript:;" class="btn btn-primary" data-topic-id="<%= topic._id %>">删除话题</a>
             <% } %>
             </p>
@@ -66,6 +67,31 @@
             <div class="comment-content"></div>
         </div>
 </div>
+<div id="modal_modify_topic" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">编辑话题</h3>
+    </div>
+    <div class="modal-body">
+        <form id="form_modify_topic" action="/modify_topic" method="post">
+        <input name="topic_id" type="hidden" value="<%= topic._id %>" />
+            <fieldset>
+                <p>
+                <label>标题</label>
+                <input id="title" type="text" name="title" class="input-xlarge" value="<%= topic.title %>">
+                </p>
+                <p>
+                <label>正文</label>
+                <textarea id="content" name="content" rows="10" cols="30" class="input-xlarge"><%= topic.content %></textarea>
+                </p>
+            </fieldset>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+        <button id="btn_modify_topic_submit" class="btn btn-primary">提交</button>
+    </div>
+</div>
 <script type="text/javascript" src='/javascripts/jquery.validate.min.js'></script>
 <script type="text/javascript">
 $(document).ready(function() {
@@ -79,17 +105,32 @@ $(document).ready(function() {
         }
     });
 
-    $(".comment-list").on("click", ".btn_drop_comment", function() {
-        if(confirm("确认删除")) {
-            var that = this;
-            var topicId = $(this).attr("data-topic-id");
-            var commentId = $(this).attr("data-comment-id");
-            $.post('/drop_comment', {"topic_id": topicId, "comment_id": commentId}, function(data) {
-                $(that).parents(".comment-detail").remove();
-            });
-        }
+    $("#btn_modify_topic").click(function() {
+        $('#modal_modify_topic').modal('show');
     });
 
+    $("#btn_modify_topic_submit").click(function() {
+        $("#form_modify_topic").submit();
+    });
+
+    $('#form_modify_topic').validate({
+        rules : {
+            title: {
+                required: true
+            },
+            content: {
+                required: true
+            }
+        },
+        messages : {
+            title: {
+                required : '标题不能为空'
+            },
+            content: {
+                required: '正文不能为空'
+            }
+        }
+    });
 
     $('#form_new_comment').validate({
         rules : {
@@ -129,6 +170,19 @@ $(document).ready(function() {
             });
         }
     });
+
+    $(".comment-list").on("click", ".btn_drop_comment", function() {
+        if(confirm("确认删除")) {
+            var that = this;
+            var topicId = $(this).attr("data-topic-id");
+            var commentId = $(this).attr("data-comment-id");
+            $.post('/drop_comment', {"topic_id": topicId, "comment_id": commentId}, function(data) {
+                $(that).parents(".comment-detail").remove();
+            });
+        }
+    });
+
+
 });
 </script>
 <% include layout_bottom %>
